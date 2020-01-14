@@ -20,6 +20,7 @@ class _HomePageState extends State<HomePage> {
           decoration: InputDecoration(
             hintText: "Pesquisar",
           ),
+          onChanged: controller.setFilter,
         ),
         actions: <Widget>[
           Observer(
@@ -32,9 +33,9 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Observer(
         builder: (BuildContext context) => ListView.builder(
-          itemCount: controller.listItems.length,
+          itemCount: controller.listFiltered.length,
           itemBuilder: (context, index) {
-            ItemModel item = controller.listItems[index];
+            ItemModel item = controller.listFiltered[index];
 
             return ItemList(
               item: item,
