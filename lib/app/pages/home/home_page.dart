@@ -32,17 +32,24 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: Observer(
-        builder: (BuildContext context) => ListView.builder(
-          itemCount: controller.listFiltered.length,
-          itemBuilder: (context, index) {
-            ItemModel item = controller.listFiltered[index];
-
-            return ItemList(
-              item: item,
-              removeClicked: () => controller.removeItem(item),
+        builder: (BuildContext context) {
+          if (controller.output.data == null)
+            return Center(
+              child: CircularProgressIndicator(),
             );
-          },
-        ),
+
+          return ListView.builder(
+            itemCount: controller.output.data.length,
+            itemBuilder: (context, index) {
+              ItemModel item = controller.output.data[index];
+
+              return ItemList(
+                item: item,
+                removeClicked: () => controller.removeItem(item),
+              );
+            },
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),

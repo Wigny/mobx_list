@@ -15,46 +15,6 @@ mixin _$HomeController on _HomeControllerBase, Store {
   int get totalChecked =>
       (_$totalCheckedComputed ??= Computed<int>(() => super.totalChecked))
           .value;
-  Computed<List<ItemModel>> _$listFilteredComputed;
-
-  @override
-  List<ItemModel> get listFiltered => (_$listFilteredComputed ??=
-          Computed<List<ItemModel>>(() => super.listFiltered))
-      .value;
-
-  final _$listItemsAtom = Atom(name: '_HomeControllerBase.listItems');
-
-  @override
-  ObservableList<ItemModel> get listItems {
-    _$listItemsAtom.context.enforceReadPolicy(_$listItemsAtom);
-    _$listItemsAtom.reportObserved();
-    return super.listItems;
-  }
-
-  @override
-  set listItems(ObservableList<ItemModel> value) {
-    _$listItemsAtom.context.conditionallyRunInAction(() {
-      super.listItems = value;
-      _$listItemsAtom.reportChanged();
-    }, _$listItemsAtom, name: '${_$listItemsAtom.name}_set');
-  }
-
-  final _$filterAtom = Atom(name: '_HomeControllerBase.filter');
-
-  @override
-  String get filter {
-    _$filterAtom.context.enforceReadPolicy(_$filterAtom);
-    _$filterAtom.reportObserved();
-    return super.filter;
-  }
-
-  @override
-  set filter(String value) {
-    _$filterAtom.context.conditionallyRunInAction(() {
-      super.filter = value;
-      _$filterAtom.reportChanged();
-    }, _$filterAtom, name: '${_$filterAtom.name}_set');
-  }
 
   final _$_HomeControllerBaseActionController =
       ActionController(name: '_HomeControllerBase');
@@ -74,16 +34,6 @@ mixin _$HomeController on _HomeControllerBase, Store {
     final _$actionInfo = _$_HomeControllerBaseActionController.startAction();
     try {
       return super.removeItem(item);
-    } finally {
-      _$_HomeControllerBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  dynamic setFilter(String v) {
-    final _$actionInfo = _$_HomeControllerBaseActionController.startAction();
-    try {
-      return super.setFilter(v);
     } finally {
       _$_HomeControllerBaseActionController.endAction(_$actionInfo);
     }

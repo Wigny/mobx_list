@@ -1,41 +1,40 @@
 import 'package:mobx/mobx.dart';
 import 'package:mobx_list/app/models/item_model.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:rxdart/subjects.dart';
 part 'home_controller.g.dart';
 
 class HomeController = _HomeControllerBase with _$HomeController;
 
 abstract class _HomeControllerBase with Store {
-  @observable
-  ObservableList<ItemModel> listItems = [
-    ItemModel(title: 'Item 1', check: true),
-    ItemModel(title: 'Item 2', check: false),
-    ItemModel(title: 'Item 3', check: false),
-  ].asObservable();
+  final listItems = BehaviorSubject<List<ItemModel>>.seeded([]);
+  final filter = BehaviorSubject<String>.seeded('');
 
-  @observable
-  String filter = '';
+  ObservableStream<List<ItemModel>> output;
+
+  _HomeControllerBase() {
+    output = Rx.combineLatest2<List<ItemModel>, String, List<ItemModel>>(
+      listItems.stream,
+      filter.stream,
+      (list, filter) => (filter.isEmpty)
+          ? list
+          : list.where((i) => i.title.toLowerCase().contains(filter)).toList(),
+    ).asObservable(initalValue: []);
+  }
 
   @action
-  addItem(ItemModel item) => listItems.add(item);
-
-  @action
-  removeItem(ItemModel item) => listItems.removeWhere(
-        (i) => i.title == item.title,
+  addItem(ItemModel item) => listItems.add(
+        List<ItemModel>.from(listItems.value)..add(item),
       );
 
   @action
-  setFilter(String v) => filter = v;
+  removeItem(ItemModel item) => listItems.add(
+        List<ItemModel>.from(listItems.value)
+          ..removeWhere((i) => i.title == item.title),
+      );
+
+  setFilter(String v) => filter.add(v);
 
   @computed
-  int get totalChecked => listItems.where((i) => i.check).length;
-
-  @computed
-  List<ItemModel> get listFiltered => (filter.isEmpty)
-      ? listItems
-      : listItems
-          .where(
-            (i) => i.title.toLowerCase().contains(filter),
-          )
-          .toList();
+  int get totalChecked => output.value.where((i) => i.check).length;
 }
